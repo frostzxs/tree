@@ -20,7 +20,7 @@ $(document).ready(function() {
 /**Модель*/
 /**читаем json, парсим в объект и передаем на отрисовку*/
 $.documentReady = function() {
-	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"+"},"2":{"name":"уровень2","parent":"1","expand":""},"3":{"name":"уровень1","parent":"0","expand":""}}';
+	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"+"},"2":{"name":"уровень2","parent":"1","expand":"-"},"3":{"name":"уровень3","parent":"2","expand":""}}';
 	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
 }
