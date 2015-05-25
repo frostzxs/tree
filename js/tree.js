@@ -10,8 +10,8 @@
 /**отслеживаем открытие документа*/
 $(document).ready(function() {
 	$.documentReady();
-	
-/**отслеживаем событие по клику на тексте и передаем модели*/	
+
+	/**отслеживаем событие по клику на тексте и передаем модели*/
 	$(".elTreeExpander").click(function() {
 		$.elTreeExpanderClick(this);
 	});
@@ -37,11 +37,11 @@ $.treeDraw = function(tree) {
 	for (var i in elementsTree) {
 		divTree = "<div class='elTree' id='id" + elementsTree[i].id + "'><p><span class='glyphicon glyphicon-minus elTreeExpander'></span><span class='elTreeText'>" + elementsTree[i].name + "</span></p></div>";
 		if (elementsTree[i].parent == "0") {
-			$("div.tree").append(divTree)						
+			$("div.tree").append(divTree)
 		} else {
-			$("#id"+elementsTree[i].parent).append(divTree)
+			$("#id" + elementsTree[i].parent).append(divTree)
 		}
-	}	
+	}
 	alert('готов!');
 }
 /**отображение свертывания/развертывания*/
