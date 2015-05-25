@@ -6,14 +6,15 @@
  */
 
 /**Контроллер*/
-/**отслеживаем событие по клику на тексте и передаем модели*/
-$(".elTreeExpander").click(function() {
-	$.elTreeExpanderClick(this);
-});
 
 /**отслеживаем открытие документа*/
 $(document).ready(function() {
 	$.documentReady();
+	
+/**отслеживаем событие по клику на тексте и передаем модели*/	
+	$(".elTreeExpander").click(function() {
+		$.elTreeExpanderClick(this);
+	});
 });
 
 /**Модель*/
