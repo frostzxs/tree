@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 /**отрисовываем документ*/
 $.documentReady = function() {
-	var templ = '{"values":[{"id":"1","name":"уровень1","parent":"0","expand":"-"},{"id":"2","name":"уровень2","parent":"1","expand":""}]}';
+	var templ = '{"values":[{"id":"1","name":"уровень1","parent":"0","expand":"-"},{"id":"2","name":"уровень2","parent":"1","expand":""},{"id":"3","name":"уровень1","parent":"0","expand":""}]}';
 	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
 }
@@ -31,31 +31,41 @@ $.elTreeExpanderClick = function(selector) {
 }
 /**Представление*/
 /**Отрисовка дерева по json*/
+
 $.treeDraw = function(tree) {
 	var elementsTree = tree.values;
-	var divTree;
+	var divElTree;
 	var divExpand;
-	for (var i in elementsTree) {
 
-		switch (elementsTree[i].expand) {
-		case "+":
-			divExpand = "glyphicon glyphicon-plus";
-			break;
-		case "-":
-			divExpand = "glyphicon glyphicon-minus";
-			break;
-		default:
-			divExpand = "glyphicon glyphicon-leaf";
-		}
-		divTree = "<div class='elTree collapse in' id='id" + elementsTree[i].id + "'><p><span class='" + divExpand + " elTreeExpander'></span><span class='elTreeText'>" + elementsTree[i].name + "</span></p></div>";
-		if (elementsTree[i].parent == "0") {
-			$("div.tree").append(divTree)
-		} else {
-			$("#id" + elementsTree[i].parent).append(divTree)
-		}
+	$.drawTree = function(parentId) {
+		$.each(elementsTree, function(i, value) {
+			if (elementsTree[i].parent == parentId) {
+
+				switch (elementsTree[i].expand) {
+				case "+":
+					divExpand = "glyphicon glyphicon-plus";
+					break;
+				case "-":
+					divExpand = "glyphicon glyphicon-minus";
+					break;
+				default:
+					divExpand = "glyphicon glyphicon-leaf";
+				}
+				divElTree = "<div class='elTree collapse in' id='id" + elementsTree[i].id + "'><p><span class='" + divExpand + " elTreeExpander'></span><span class='elTreeText'>" + elementsTree[i].name + "</span></p></div>";
+				if (elementsTree[i].parent == "0") {
+					$("div.tree").append(divElTree)
+				} else {
+					$("#id" + elementsTree[i].parent).append(divElTree)
+				}
+
+				$.drawTree(elementsTree[i].id);
+			}
+		})
 	}
+	$.drawTree(0);
 	alert('готов!');
 }
+
 /**отображение свертывания/развертывания*/
 $.elTreeToggleDraw = function(selector) {
 	$(selector).parent().parent().find(".elTree").collapse('toggle');
