@@ -6,7 +6,6 @@
  */
 
 /**Контроллер*/
-
 /**отслеживаем открытие документа*/
 $(document).ready(function() {
 	$.documentReady();
@@ -16,12 +15,12 @@ $(document).ready(function() {
 		$.elTreeExpanderClick(this);
 	});
 });
+/*************************************************************/
 
 /**Модель*/
-
-/**отрисовываем документ*/
+/**читаем json, парсим в объект и передаем на отрисовку*/
 $.documentReady = function() {
-	var templ = '{"values":[{"id":"1","name":"уровень1","parent":"0","expand":"-"},{"id":"2","name":"уровень2","parent":"1","expand":""},{"id":"3","name":"уровень1","parent":"0","expand":""}]}';
+	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"+"},"2":{"name":"уровень2","parent":"1","expand":""},"3":{"name":"уровень1","parent":"0","expand":""}}';
 	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
 }
@@ -29,19 +28,22 @@ $.documentReady = function() {
 $.elTreeExpanderClick = function(selector) {
 	$.elTreeToggleDraw(selector);
 }
-/**Представление*/
-/**Отрисовка дерева по json*/
+/*************************************************************/
 
+/**Представление*/
+/**Отрисовка дерева*/
 $.treeDraw = function(tree) {
-	var elementsTree = tree.values;
 	var divElTree;
 	var divExpand;
+	var divCollapse;
 
 	$.drawTree = function(parentId) {
-		$.each(elementsTree, function(i, value) {
-			if (elementsTree[i].parent == parentId) {
+		var p;
 
-				switch (elementsTree[i].expand) {
+		$.each(tree, function(elementId, value) {
+			if (tree[elementId].parent == parentId) {
+
+				switch (tree[elementId].expand) {
 				case "+":
 					divExpand = "glyphicon glyphicon-plus";
 					break;
@@ -51,21 +53,23 @@ $.treeDraw = function(tree) {
 				default:
 					divExpand = "glyphicon glyphicon-leaf";
 				}
-				divElTree = "<div class='elTree collapse in' id='id" + elementsTree[i].id + "'><p><span class='" + divExpand + " elTreeExpander'></span><span class='elTreeText'>" + elementsTree[i].name + "</span></p></div>";
-				if (elementsTree[i].parent == "0") {
-					$("div.tree").append(divElTree)
+
+				p = tree[elementId].parent;
+				if (p != "0" && tree[p].expand == "+") {
+					divCollapse = "collapse";
 				} else {
-					$("#id" + elementsTree[i].parent).append(divElTree)
+					divCollapse = "collapse in";
 				}
 
-				$.drawTree(elementsTree[i].id);
+				divElTree = "<div class='elTree " + divCollapse + "' id='id" + elementId + "'><p><span class='" + divExpand + " elTreeExpander'></span><span class='elTreeText'>" + tree[elementId].name + "</span></p></div>";
+				$("#id" + tree[elementId].parent).append(divElTree);
+				$.drawTree(elementId);
 			}
 		})
 	}
-	$.drawTree(0);
+	$.drawTree("0");
 	alert('готов!');
 }
-
 /**отображение свертывания/развертывания*/
 $.elTreeToggleDraw = function(selector) {
 	$(selector).parent().parent().find(".elTree").collapse('toggle');
