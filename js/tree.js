@@ -70,7 +70,7 @@ $.treeDraw = function(tree) {
 					divCollapse = "collapse in";
 				}
 
-				divElTree = "<div class='elTree " + divCollapse + "' id='id" + elementId + "'><p><span class='" + divExpand + "'></span><span class='elTreeText'>" + tree[elementId].name + "</span></p></div>";
+				divElTree = "<div class='elTree input-group input-group-sm" + divCollapse + "' id='id" + elementId + "'><p><span class='" + divExpand + "'></span><span class='label label-warning elTreeText'>" + tree[elementId].name + "</span></p></div>";
 				$("#id" + tree[elementId].parent).append(divElTree);
 				$.drawTree(elementId);
 			}
