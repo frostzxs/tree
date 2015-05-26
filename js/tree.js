@@ -9,18 +9,21 @@
 /**отслеживаем открытие документа*/
 $(document).ready(function() {
 	$.documentReady();
-
 	/**отслеживаем событие по клику на тексте и передаем модели*/
-	$(".elTreeExpander").click(function() {		
-		$.elTreeExpanderClick($(this).parent().parent(".elTree").attr('id').substr(2));		
-	});
+	$(".elTreeExpander").click(function() {
+		$.elTreeExpanderClick($(this).parent().parent(".elTree").attr('id').substr(2));
+	});	
+	
+	
 });
 /*************************************************************/
 
 /**Модель*/
 /**читаем json, парсим в объект и передаем на отрисовку*/
 $.documentReady = function() {
-	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"+"},"2":{"name":"уровень2","parent":"1","expand":"-"},"3":{"name":"уровень3","parent":"2","expand":""}}';
+	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"+"},\
+				  "2":{"name":"уровень2","parent":"1","expand":"+"},\
+				  "3":{"name":"уровень3","parent":"2","expand":""}}';
 	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
 
@@ -70,7 +73,12 @@ $.treeDraw = function(tree) {
 					divCollapse = "collapse in";
 				}
 
-				divElTree = "<div class='elTree input-group input-group-sm" + divCollapse + "' id='id" + elementId + "'><p><span class='" + divExpand + "'></span><span class='label label-warning elTreeText'>" + tree[elementId].name + "</span></p></div>";
+				divElTree = "<div class='elTree " + divCollapse + "' id='id" + elementId + "'>\
+								<div class='input-group'>\
+									<span class='input-group-addon " + divExpand + "'></span>\
+									<input type='text' class='form-control' value='" + tree[elementId].name + "'>\
+								</div>\
+							 </div>";
 				$("#id" + tree[elementId].parent).append(divElTree);
 				$.drawTree(elementId);
 			}
@@ -79,10 +87,11 @@ $.treeDraw = function(tree) {
 	$.drawTree("0");
 	alert('готов!');
 }
+
 /**отображение свертывания/развертывания*/
 $.elTreeToggleDraw = function(id) {
-	var selector = $('#id'+id).children().children('.elTreeExpander');
-	$('#id'+id).children(".elTree").collapse('toggle');
+	var selector = $('#id' + id).children().children('.elTreeExpander');
+	$('#id' + id).children(".elTree").collapse('toggle');
 
 	/** найти под элементы, если нашел, то, если показаны подэлементы, то показать -, если не показаны, то показать +
 	 */
