@@ -11,8 +11,8 @@ $(document).ready(function() {
 	$.documentReady();
 
 	/**отслеживаем событие по клику на тексте и передаем модели*/
-	$(".elTreeExpander").click(function() {
-		$.elTreeExpanderClick(this);
+	$(".elTreeExpander").click(function() {		
+		$.elTreeExpanderClick($(this).parent().parent(".elTree").attr('id').substr(2));		
 	});
 });
 /*************************************************************/
@@ -23,10 +23,19 @@ $.documentReady = function() {
 	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"+"},"2":{"name":"уровень2","parent":"1","expand":"-"},"3":{"name":"уровень3","parent":"2","expand":""}}';
 	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
-}
-/**даем команду на отображение свертывания/развертывания*/
-$.elTreeExpanderClick = function(selector) {
-	$.elTreeToggleDraw(selector);
+
+	/**даем команду на отображение свертывания/развертывания*/
+	$.elTreeExpanderClick = function(id) {
+		switch (tree[id].expand ) {
+		case "+":
+			tree[id].expand = "-";
+			break;
+		case "-":
+			tree[id].expand = "+";
+			break;
+		}
+		$.elTreeToggleDraw(id);
+	}
 }
 /*************************************************************/
 
@@ -45,10 +54,10 @@ $.treeDraw = function(tree) {
 
 				switch (tree[elementId].expand) {
 				case "+":
-					divExpand = "glyphicon glyphicon-plus";
+					divExpand = "glyphicon glyphicon-plus elTreeExpander";
 					break;
 				case "-":
-					divExpand = "glyphicon glyphicon-minus";
+					divExpand = "glyphicon glyphicon-minus elTreeExpander";
 					break;
 				default:
 					divExpand = "glyphicon glyphicon-leaf";
@@ -61,7 +70,7 @@ $.treeDraw = function(tree) {
 					divCollapse = "collapse in";
 				}
 
-				divElTree = "<div class='elTree " + divCollapse + "' id='id" + elementId + "'><p><span class='" + divExpand + " elTreeExpander'></span><span class='elTreeText'>" + tree[elementId].name + "</span></p></div>";
+				divElTree = "<div class='elTree input-group input-group-sm" + divCollapse + "' id='id" + elementId + "'><p><span class='" + divExpand + "'></span><span class='label label-warning elTreeText'>" + tree[elementId].name + "</span></p></div>";
 				$("#id" + tree[elementId].parent).append(divElTree);
 				$.drawTree(elementId);
 			}
@@ -71,13 +80,14 @@ $.treeDraw = function(tree) {
 	alert('готов!');
 }
 /**отображение свертывания/развертывания*/
-$.elTreeToggleDraw = function(selector) {
-	$(selector).parent().parent().find(".elTree").collapse('toggle');
+$.elTreeToggleDraw = function(id) {
+	var selector = $('#id'+id).children().children('.elTreeExpander');
+	$('#id'+id).children(".elTree").collapse('toggle');
 
 	/** найти под элементы, если нашел, то, если показаны подэлементы, то показать -, если не показаны, то показать +
 	 */
-	if ($(selector).hasClass("glyphicon glyphicon-plus"))
-		$(selector).removeClass("glyphicon glyphicon-plus").addClass("glyphicon glyphicon-minus")
-	else if ($(selector).hasClass("glyphicon glyphicon-minus"))
-		$(selector).removeClass("glyphicon glyphicon-minus").addClass("glyphicon glyphicon-plus");
+	if (selector.hasClass("glyphicon glyphicon-plus"))
+		selector.removeClass("glyphicon glyphicon-plus").addClass("glyphicon glyphicon-minus")
+	else if (selector.hasClass("glyphicon glyphicon-minus"))
+		selector.removeClass("glyphicon glyphicon-minus").addClass("glyphicon glyphicon-plus");
 }
