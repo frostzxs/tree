@@ -10,7 +10,7 @@
 $(document).ready(function() {
 	$.documentReady();
 	/**отслеживаем событие по клику на тексте и передаем модели*/
-	$(".elTreeExpander").click(function() {
+	$(".input-group-addon").click(function() {
 		$.elTreeExpanderClick($(this).parent().parent(".elTree").attr('id').substr(2));
 	});	
 	
@@ -75,7 +75,9 @@ $.treeDraw = function(tree) {
 
 				divElTree = "<div class='elTree " + divCollapse + "' id='id" + elementId + "'>\
 								<div class='input-group'>\
-									<span class='input-group-addon " + divExpand + "'></span>\
+									<span class='input-group-addon'>\
+										<span class='" + divExpand + "'></span>\
+									</span>\
 									<input type='text' class='form-control' value='" + tree[elementId].name + "'>\
 								</div>\
 							 </div>";
@@ -90,10 +92,10 @@ $.treeDraw = function(tree) {
 
 /**отображение свертывания/развертывания*/
 $.elTreeToggleDraw = function(id) {
-	var selector = $('#id' + id).children().children('.elTreeExpander');
+	var selector = $('#id' + id).children('.input-group').children('.input-group-addon').children('.elTreeExpander');
 	$('#id' + id).children(".elTree").collapse('toggle');
 
-	/** найти под элементы, если нашел, то, если показаны подэлементы, то показать -, если не показаны, то показать +
+	/** найти подэлементы, если нашел, то, если показаны подэлементы, то показать -, если не показаны, то показать +
 	 */
 	if (selector.hasClass("glyphicon glyphicon-plus"))
 		selector.removeClass("glyphicon glyphicon-plus").addClass("glyphicon glyphicon-minus")
