@@ -10,7 +10,7 @@
 $(document).ready(function() {
 	$.documentReady();
 	/**отслеживаем событие по клику на тексте и передаем модели*/
-	$(".input-group-addon").click(function() {
+	$(".input-group-addon.action").click(function() {
 		$.elTreeExpanderClick($(this).parent().parent(".elTree").attr('id').substr(2));
 	});	
 	
@@ -21,9 +21,9 @@ $(document).ready(function() {
 /**Модель*/
 /**читаем json, парсим в объект и передаем на отрисовку*/
 $.documentReady = function() {
-	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"+"},\
-				  "2":{"name":"уровень2","parent":"1","expand":"+"},\
-				  "3":{"name":"уровень3","parent":"2","expand":""}}';
+	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"-","state":"selected"},'+
+	            ' "2":{"name":"уровень2","parent":"1","expand":"+","state":"focused"},'+
+	            ' "3":{"name":"уровень3","parent":"2","expand":"" ,"state":""}}';
 	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
 
@@ -56,31 +56,33 @@ $.treeDraw = function(tree) {
 			if (tree[elementId].parent == parentId) {
 
 				switch (tree[elementId].expand) {
-				case "+":
-					divExpand = "glyphicon glyphicon-plus elTreeExpander";
-					break;
-				case "-":
-					divExpand = "glyphicon glyphicon-minus elTreeExpander";
-					break;
-				default:
-					divExpand = "glyphicon glyphicon-leaf";
-				}
+			    case '+':
+                    divExpand = 'glyphicon glyphicon-plus elTreeExpander';
+                    break;
+                case '-':
+                    divExpand = 'glyphicon glyphicon-minus elTreeExpander';
+                    break;
+                default:
+                    divExpand = 'glyphicon glyphicon-leaf';
+                }
 
-				p = tree[elementId].parent;
-				if (p != "0" && tree[p].expand == "+") {
-					divCollapse = "collapse";
-				} else {
-					divCollapse = "collapse in";
-				}
-
-				divElTree = "<div class='elTree " + divCollapse + "' id='id" + elementId + "'>\
-								<div class='input-group'>\
-									<span class='input-group-addon'>\
-										<span class='" + divExpand + "'></span>\
-									</span>\
-									<input type='text' class='form-control' value='" + tree[elementId].name + "'>\
-								</div>\
-							 </div>";
+                p = tree[elementId].parent;
+                if (p != '0' && tree[p].expand == '+') {
+                    divCollapse = 'collapse';
+                } else {
+                    divCollapse = 'collapse in';
+                }
+				divElTree = '<div class="elTree ' + divCollapse + '" id="id' + elementId + '">'+
+                                '<div class="input-group">'+
+                                    '<span class="input-group-addon action">'+
+                                        '<span class="' + divExpand + '"></span>'+
+                                    '</span>'+
+                                    '<input type="text" class="form-control" value="' + tree[elementId].name + '">'+
+                                    '<span class="input-group-addon">'+
+                                        '<input type="checkbox">'+
+                                    '</span>'+
+                                '</div>'+
+                            '</div>';
 				$("#id" + tree[elementId].parent).append(divElTree);
 				$.drawTree(elementId);
 			}
