@@ -32,8 +32,49 @@ $.documentReady = function() {
 	            ' "5":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
 	            ' "6":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
 	            ' "7":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-	            ' "8":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+	            
-	            ' "9":{"name":"уровень3","parent":"2","expand":"" ,"state":""}}';
+	            ' "8":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+	            ' "9":{"name":"уровень3","parent":"2","expand":"" ,"state":""},'+
+                ' "10":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "11":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "12":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "13":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "14":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "15":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "16":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "17":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "18":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "19":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "20":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "21":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "22":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "23":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "24":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "25":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "26":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "27":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "28":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "29":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "30":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "31":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "32":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "33":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "34":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "35":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "36":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "37":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "38":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "39":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "40":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "41":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "42":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "43":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "44":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "45":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+                             
+                ' "46":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "47":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "48":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
+                ' "49":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+	            
+	            ' "50":{"name":"уровень3","parent":"2","expand":"" ,"state":""}}';
 	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
 
