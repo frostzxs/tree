@@ -19,6 +19,19 @@ $(document).ready(function() {
         $.elTreeCheckboxClick($(this).parent().parent(".elTree").attr('id').substr(2));
     });	
 	
+	/**отлавливаем нажатие enter на элементе*/
+	
+	/**отлавливаем нажатие enter на элементе*/
+    $(".form-control").keypress(function(e) {
+        var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
+        if (e.keyCode == 13) {
+            //нажата клавиша enter - здесь ваш код            
+            $(this).blur();            
+            $.elTreeCheckboxClick(elId);
+            treeFocus = elId;            
+        }
+    }); 
+
 });
 /*************************************************************/
 
@@ -76,6 +89,7 @@ $.documentReady = function() {
                 ' "49":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+	            
 	            ' "50":{"name":"уровень3","parent":"2","expand":"" ,"state":""}}';
 	var tree = jQuery.parseJSON(templ);
+	var treeFocus = '4';
 	$.treeDraw(tree);
 
 	/**фиксируем свертывание/развертывание в модели и даем команду на отображение свертывания/развертывания*/
@@ -101,7 +115,7 @@ $.documentReady = function() {
             break;
         }
         $.elTreeSelectDraw(id);
-	}
+	}	
 }
 /*************************************************************/
 
@@ -156,7 +170,7 @@ $.treeDraw = function(tree) {
                                     '</span>'+
                                     '<input type="text" class="form-control '+inputHighlight+'" value="' + tree[elementId].name + '">'+
                                     '<span class="input-group-addon elCheckbox">'+
-                                        '<span class="' + divState + '">'+
+                                        '<span class="' + divState + '"></span>'+
                                     '</span>'+
                                 '</div>'+
                             '</div>';
@@ -184,3 +198,6 @@ $.elTreeSelectDraw = function(id) {
     $('#id' + id).children('.input-group').children('.form-control').toggleClass('elTreeSelectedHighlight');       
 }
 
+/**режим редактирования*/
+
+/**перемещение по дереву*/
