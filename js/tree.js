@@ -1,4 +1,5 @@
 /**
+ *
  * @author дом
  */
 
@@ -24,22 +25,27 @@ $(document).ready(function() {
     });	
 	
 	/**отлавливаем нажатие enter на элементе*/
-	
-	/**отлавливаем нажатие enter на элементе*/
-    $(".form-control").keypress(function(e) {
-        var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
+    $(".form-control").keypress(function(e) {        
         if (e.keyCode == 13) {
             //нажата клавиша enter - здесь ваш код            
             $(this).blur();         
         }
     }); 
-
+    
 	
 	$(".form-control").focus(function() {
 		var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
 		$.elTreeFocus(elId);
-	})
-
+		$.elTreeFocusEdit("true");
+	});
+	
+    $(".form-control").focusout(function(){
+        $.elTreeFocusEdit("");            
+    });
+    
+    $(document).keydown(function(e){
+        $.elTreeKey(e.keyCode);
+    })
 });
 /*************************************************************/
 
@@ -48,57 +54,19 @@ $(document).ready(function() {
 $.documentReady = function() {
 	var templ = '{'+
 				'"treeFocus":"2",'+
+				'"treeFocusEdit":"",'+
 				'"values":{'+
-				' "1":{"name":"уровень1","parent":"0","expand":"-","state":"selected"},'+
-	            ' "2":{"name":"уровень2","parent":"1","expand":"-","state":"focused"},'+
-	            ' "3":{"name":"уровень3","parent":"2","expand":"+" ,"state":""},'+
-	            ' "4":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-	            ' "5":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-	            ' "6":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-	            ' "7":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-	            ' "8":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-	            ' "9":{"name":"уровень3","parent":"2","expand":"" ,"state":""},'+
-                ' "10":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "11":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "12":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "13":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "14":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "15":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "16":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "17":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "18":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "19":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "20":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "21":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "22":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "23":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "24":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "25":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "26":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "27":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "28":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "29":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "30":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "31":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "32":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "33":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "34":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "35":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "36":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "37":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "38":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "39":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "40":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "41":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "42":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "43":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "44":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "45":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+                             
-                ' "46":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "47":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "48":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
-                ' "49":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+	            
-	            ' "50":{"name":"уровень3","parent":"2","expand":"" ,"state":""}}}';
+				' "1":{"name":"уровень1","parent":"0","expand":"-","state":"selected","prev":"" },'+
+	            ' "2":{"name":"уровень2","parent":"1","expand":"-","state":"","prev":"1" },'+
+	            ' "3":{"name":"уровень3","parent":"2","expand":"+" ,"state":"","prev":"2" },'+
+	            ' "4":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"3" },'+
+	            ' "5":{"name":"уровень45","parent":"3","expand":"" ,"state":"","prev":"4" },'+
+	            ' "6":{"name":"уровень46","parent":"3","expand":"" ,"state":"","prev":"5" },'+	            
+	            ' "7":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"7" },'+
+	            ' "8":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"6" },'+
+	            ' "9":{"name":"уровень3","parent":"2","expand":"" ,"state":"","prev":"8" },'+
+                ' "10":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"9" },'+                         
+	            ' "50":{"name":"уровень3","parent":"2","expand":"" ,"state":"","prev":"10"}}}';
 	var tree = jQuery.parseJSON(templ);	
 	$.treeDraw(tree);
 
@@ -128,15 +96,57 @@ $.documentReady = function() {
         $.elTreeSelectDraw(id);
 	}
 	
-	
+	/**фиксируем фокус в модели и даем команду на отображение фокуса*/
 	$.elTreeFocus = function(id) {
+	    
 		if (tree.treeFocus != id){
 			$.elTreeFocusDraw(tree.treeFocus);//убираем старый фокус
 			$.elTreeFocusDraw(id);//ставим новый фокус
 			tree.treeFocus = id;
-			}
+    }      
 	}
 	
+	
+    
+    $.elTreeKey = function(key) {
+        var next;
+        if (tree.treeFocusEdit == "") {
+            switch(key) {
+            case 38:
+                if (tree.values[tree.treeFocus].prev) 
+                    $.elTreeFocus(tree.values[tree.treeFocus].prev);
+                break;
+            case 40:
+                next = $.nextId(tree.treeFocus);
+                if (next) 
+                    $.elTreeFocus(next);
+                break;
+            }
+
+        }
+    }
+
+    
+    $.nextId = function(id) {
+        var idNextFound = "";
+        $.each(tree.values, function(idNext, value) {
+            if (tree.values[idNext].prev == id)
+                idNextFound = idNext;
+        });
+        return idNextFound;
+    }
+
+
+
+	
+    $.elTreeFocusEdit = function(checker) {
+        if (checker) {
+            tree.treeFocusEdit = "true";            
+        } else {
+            tree.treeFocusEdit = "";            
+        }
+    }
+
 }
 /*************************************************************/
 
@@ -154,7 +164,7 @@ $.treeDraw = function(tree) {
 	$.drawTree = function(parentId) {	
 		
 		$.each(tree.values, function(elementId, value) {
-			iter++;
+			iter++;//считаем количество итераций
 			if (tree.values[elementId].parent == parentId) {
 
 				switch (tree.values[elementId].expand) {
@@ -178,7 +188,7 @@ $.treeDraw = function(tree) {
                 
                 switch (tree.treeFocus){
                 case elementId:
-                    inputHighlight = 'elTreeSelectedHighlight';
+                    inputHighlight = 'elTreeFocusHighlight';                    
                     break;
                 default:
                     inputHighlight = '';
@@ -201,12 +211,12 @@ $.treeDraw = function(tree) {
                                     '</span>'+
                                 '</div>'+
                             '</div>';
-				$("#id" + tree.values[elementId].parent).append(divElTree);		
+				$("#id" + tree.values[elementId].parent).append(divElTree);
 				$.drawTree(elementId);
 			}			
 		})
 	}
-	$.drawTree("0");
+	$.drawTree("0");	
 	alert('готов!'+iter);
 }
 
@@ -219,13 +229,13 @@ $.elTreeToggleDraw = function(id) {
 		selector.toggleClass("glyphicon-plus").toggleClass("glyphicon-minus");
 	}
 
-/**отображение подсветки выбранного элемента*/
+/**отображение флажка для выбранного элемента*/
 $.elTreeSelectDraw = function(id) {
     $('#id' + id).children('.input-group').children('.input-group-addon.elCheckbox').children('span.glyphicon').toggleClass("glyphicon-check").toggleClass("glyphicon-unchecked");
 }
-
+/**отображение подсветки фокуса*/
 $.elTreeFocusDraw = function(id){
-	$('#id' + id).children('.input-group').children('.form-control').toggleClass('elTreeSelectedHighlight');
+	$('#id' + id).children('.input-group').children('.form-control').toggleClass('elTreeFocusHighlight');
 }
 
 /**режим редактирования*/
