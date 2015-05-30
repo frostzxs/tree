@@ -11,12 +11,16 @@ $(document).ready(function() {
 	$.documentReady();
 	/**отслеживаем событие по клику на иконке развертывания и передаем модели*/
 	$(".input-group-addon.action").click(function() {
-		$.elTreeExpanderClick($(this).parent().parent(".elTree").attr('id').substr(2));
+		var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
+		$.elTreeExpanderClick(elId);
+		$.elTreeFocus(elId);
 	});
 	
 	/**отслеживаем событие по клику на флажке и передаем модели*/
     $(".input-group-addon.elCheckbox").click(function() {
+    	var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
         $.elTreeCheckboxClick($(this).parent().parent(".elTree").attr('id').substr(2));
+        $.elTreeFocus(elId);
     });	
 	
 	/**отлавливаем нажатие enter на элементе*/
@@ -26,11 +30,15 @@ $(document).ready(function() {
         var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
         if (e.keyCode == 13) {
             //нажата клавиша enter - здесь ваш код            
-            $(this).blur();            
-            $.elTreeCheckboxClick(elId);
-            treeFocus = elId;            
+            $(this).blur();         
         }
     }); 
+
+	
+	$(".form-control").focus(function() {
+		var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
+		$.elTreeFocus(elId);
+	})
 
 });
 /*************************************************************/
@@ -38,7 +46,10 @@ $(document).ready(function() {
 /**Модель*/
 /**читаем json, парсим в объект и передаем на отрисовку*/
 $.documentReady = function() {
-	var templ = '{"1":{"name":"уровень1","parent":"0","expand":"-","state":"selected"},'+
+	var templ = '{'+
+				'"treeFocus":"2",'+
+				'"values":{'+
+				' "1":{"name":"уровень1","parent":"0","expand":"-","state":"selected"},'+
 	            ' "2":{"name":"уровень2","parent":"1","expand":"-","state":"focused"},'+
 	            ' "3":{"name":"уровень3","parent":"2","expand":"+" ,"state":""},'+
 	            ' "4":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
@@ -87,35 +98,45 @@ $.documentReady = function() {
                 ' "47":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
                 ' "48":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+
                 ' "49":{"name":"уровень4","parent":"3","expand":"" ,"state":""},'+	            
-	            ' "50":{"name":"уровень3","parent":"2","expand":"" ,"state":""}}';
-	var tree = jQuery.parseJSON(templ);
-	var treeFocus = '4';
+	            ' "50":{"name":"уровень3","parent":"2","expand":"" ,"state":""}}}';
+	var tree = jQuery.parseJSON(templ);	
 	$.treeDraw(tree);
 
 	/**фиксируем свертывание/развертывание в модели и даем команду на отображение свертывания/развертывания*/
 	$.elTreeExpanderClick = function(id) {
-		switch (tree[id].expand ) {
+		switch (tree.values[id].expand ) {
 		case "+":
-			tree[id].expand = "-";
+			tree.values[id].expand = "-";
 			break;
 		case "-":
-			tree[id].expand = "+";
+			tree.values[id].expand = "+";
 			break;
 		}
 		$.elTreeToggleDraw(id);
 	}
+	
 	/**фиксируем выбор в модели и даем команду на отображение выбора(переключение флажка элемента)*/
 	$.elTreeCheckboxClick = function(id) {
-	    switch (tree[id].state ) {
+	    switch (tree.values[id].state ) {
         case "selected":
-            tree[id].state = "";
+            tree.values[id].state = "";
             break;
         default:        
-            tree[id].state = "selected";
+            tree.values[id].state = "selected";
             break;
         }
         $.elTreeSelectDraw(id);
-	}	
+	}
+	
+	
+	$.elTreeFocus = function(id) {
+		if (tree.treeFocus != id){
+			$.elTreeFocusDraw(tree.treeFocus);//убираем старый фокус
+			$.elTreeFocusDraw(id);//ставим новый фокус
+			tree.treeFocus = id;
+			}
+	}
+	
 }
 /*************************************************************/
 
@@ -132,11 +153,11 @@ $.treeDraw = function(tree) {
 //дальше идет рекурсивно: функция рисует все подэлементы у указанной ветки, затем рисует подэлементы у каждого потомка ветки и т.д.   
 	$.drawTree = function(parentId) {	
 		
-		$.each(tree, function(elementId, value) {
+		$.each(tree.values, function(elementId, value) {
 			iter++;
-			if (tree[elementId].parent == parentId) {
+			if (tree.values[elementId].parent == parentId) {
 
-				switch (tree[elementId].expand) {
+				switch (tree.values[elementId].expand) {
 			    case '+':
                     divExpand = 'glyphicon glyphicon-plus elTreeExpander';
                     break;
@@ -147,18 +168,24 @@ $.treeDraw = function(tree) {
                     divExpand = 'glyphicon glyphicon-leaf';
                 }
                 
-                switch (tree[elementId].state) {
+                switch (tree.values[elementId].state) {
                 case 'selected':
-                    divState = 'glyphicon glyphicon-check';
-                    inputHighlight = 'elTreeSelectedHighlight';
+                    divState = 'glyphicon glyphicon-check';                    
                     break;                
                 default:
-                    divState = 'glyphicon glyphicon-unchecked';
+                    divState = 'glyphicon glyphicon-unchecked';                    
+                }
+                
+                switch (tree.treeFocus){
+                case elementId:
+                    inputHighlight = 'elTreeSelectedHighlight';
+                    break;
+                default:
                     inputHighlight = '';
                 }
-
-                p = tree[elementId].parent;
-                if (p != '0' && tree[p].expand == '+') {
+                
+                p = tree.values[elementId].parent;
+                if (p != '0' && tree.values[p].expand == '+') {
                     divCollapse = 'collapse';
                 } else {
                     divCollapse = 'collapse in';
@@ -168,13 +195,13 @@ $.treeDraw = function(tree) {
                                     '<span class="input-group-addon action">'+
                                         '<span class="' + divExpand + '"></span>'+
                                     '</span>'+
-                                    '<input type="text" class="form-control '+inputHighlight+'" value="' + tree[elementId].name + '">'+
+                                    '<input type="text" class="form-control '+inputHighlight+'" value="' + tree.values[elementId].name + '">'+
                                     '<span class="input-group-addon elCheckbox">'+
                                         '<span class="' + divState + '"></span>'+
                                     '</span>'+
                                 '</div>'+
                             '</div>';
-				$("#id" + tree[elementId].parent).append(divElTree);		
+				$("#id" + tree.values[elementId].parent).append(divElTree);		
 				$.drawTree(elementId);
 			}			
 		})
@@ -195,7 +222,10 @@ $.elTreeToggleDraw = function(id) {
 /**отображение подсветки выбранного элемента*/
 $.elTreeSelectDraw = function(id) {
     $('#id' + id).children('.input-group').children('.input-group-addon.elCheckbox').children('span.glyphicon').toggleClass("glyphicon-check").toggleClass("glyphicon-unchecked");
-    $('#id' + id).children('.input-group').children('.form-control').toggleClass('elTreeSelectedHighlight');       
+}
+
+$.elTreeFocusDraw = function(id){
+	$('#id' + id).children('.input-group').children('.form-control').toggleClass('elTreeSelectedHighlight');
 }
 
 /**режим редактирования*/
