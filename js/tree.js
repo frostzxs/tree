@@ -32,17 +32,18 @@ $(document).ready(function() {
         }
     }); 
     
-	
+    //ставим фокус на элементе, помечаем для редактирования 	
 	$(".form-control").focus(function() {
 		var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
 		$.elTreeFocus(elId);
 		$.elTreeFocusEdit("true");
 	});
 	
+	//убираем фокус с элемента, помечаем отмену редактирования 
     $(".form-control").focusout(function(){
         $.elTreeFocusEdit("");            
     });
-    
+    //отслеживаем нажатие клавиш
     $(document).keydown(function(e){
         $.elTreeKey(e.keyCode);
     })
@@ -50,7 +51,7 @@ $(document).ready(function() {
 /*************************************************************/
 
 /**Модель*/
-/**читаем json, парсим в объект и передаем на отрисовку*/
+//читаем json, парсим в объект и передаем на отрисовку
 $.documentReady = function() {
 	var templ = '{'+
 				'"treeFocus":"2",'+
@@ -70,7 +71,7 @@ $.documentReady = function() {
 	var tree = jQuery.parseJSON(templ);	
 	$.treeDraw(tree);
 
-	/**фиксируем свертывание/развертывание в модели и даем команду на отображение свертывания/развертывания*/
+	//фиксируем свертывание/развертывание в модели и даем команду на отображение свертывания/развертывания
 	$.elTreeExpanderClick = function(id) {
 		switch (tree.values[id].expand ) {
 		case "+":
@@ -83,7 +84,7 @@ $.documentReady = function() {
 		$.elTreeToggleDraw(id);
 	}
 	
-	/**фиксируем выбор в модели и даем команду на отображение выбора(переключение флажка элемента)*/
+	//фиксируем выбор в модели и даем команду на отображение выбора(переключение флажка элемента)
 	$.elTreeCheckboxClick = function(id) {
 	    switch (tree.values[id].state ) {
         case "selected":
@@ -96,7 +97,7 @@ $.documentReady = function() {
         $.elTreeSelectDraw(id);
 	}
 	
-	/**фиксируем фокус в модели и даем команду на отображение фокуса*/
+	//фиксируем фокус в модели и даем команду на отображение фокуса
 	$.elTreeFocus = function(id) {
 	    
 		if (tree.treeFocus != id){
@@ -106,27 +107,31 @@ $.documentReady = function() {
     }      
 	}
 	
-	
-    
+    //обрабатываем нажатия клавиатуры
     $.elTreeKey = function(key) {
         var next;
-        if (tree.treeFocusEdit == "") {
+        if (tree.treeFocusEdit == "") {//если поле не редактируется 
             switch(key) {
-            case 38:
+                
+            case 38://стрелка вверх
                 if (tree.values[tree.treeFocus].prev) 
                     $.elTreeFocus(tree.values[tree.treeFocus].prev);
                 break;
-            case 40:
+            case 40://стрелка вниз
                 next = $.nextId(tree.treeFocus);
                 if (next) 
                     $.elTreeFocus(next);
+                break;
+            case 13://клавиша enter               
+                alert(1);
+                $.elTreeFocusEditDraw(tree.treeFocus);                
                 break;
             }
 
         }
     }
 
-    
+    //поиск следующего по порядку элемента
     $.nextId = function(id) {
         var idNextFound = "";
         $.each(tree.values, function(idNext, value) {
@@ -136,9 +141,7 @@ $.documentReady = function() {
         return idNextFound;
     }
 
-
-
-	
+    //переключаем режим редактирования на противоположный	
     $.elTreeFocusEdit = function(checker) {
         if (checker) {
             tree.treeFocusEdit = "true";            
@@ -239,5 +242,8 @@ $.elTreeFocusDraw = function(id){
 }
 
 /**режим редактирования*/
+$.elTreeFocusEditDraw = function(id){
+    $('#id' + id).children('.input-group').children('.form-control').focus();        
+}
 
 /**перемещение по дереву*/
