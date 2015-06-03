@@ -25,12 +25,12 @@ $(document).ready(function() {
     });	
 	
 	/**отлавливаем нажатие enter на элементе*/
-    $(".form-control").keypress(function(e) {        
-        if (e.keyCode == 13) {
+    /**     $(".form-control").keypress(function(e) {        
+   if (e.keyCode == 13) {
             //нажата клавиша enter - здесь ваш код            
             $(this).blur();         
-        }
-    }); 
+        
+    }); }*/
     
     //ставим фокус на элементе, помечаем для редактирования 	
 	$(".form-control").focus(function() {
@@ -108,28 +108,42 @@ $.documentReady = function() {
 	}
 	
     //обрабатываем нажатия клавиатуры
+
     $.elTreeKey = function(key) {
         var next;
-        if (tree.treeFocusEdit == "") {//если поле не редактируется 
+        if (tree.treeFocusEdit == "") {//если поле не редактируется
             switch(key) {
-                
-            case 38://стрелка вверх
-                if (tree.values[tree.treeFocus].prev) 
+
+            case 38:
+                //стрелка вверх
+                if (tree.values[tree.treeFocus].prev)
                     $.elTreeFocus(tree.values[tree.treeFocus].prev);
                 break;
-            case 40://стрелка вниз
+            case 40:
+                //стрелка вниз
                 next = $.nextId(tree.treeFocus);
-                if (next) 
+                if (next)
                     $.elTreeFocus(next);
                 break;
-            case 13://клавиша enter               
-                alert(1);
-                $.elTreeFocusEditDraw(tree.treeFocus);                
+            case 13:
+                //клавиша enter
+
+                $.elTreeFocusEditDraw(tree.treeFocus);
                 break;
             }
 
+        } else {
+            switch(key) {
+
+            case 13:
+                //клавиша enter
+                $.elTreeFocusEditDraw(tree.treeFocus,"1");
+                break;
+            }
         }
     }
+
+
 
     //поиск следующего по порядку элемента
     $.nextId = function(id) {
@@ -242,8 +256,18 @@ $.elTreeFocusDraw = function(id){
 }
 
 /**режим редактирования*/
-$.elTreeFocusEditDraw = function(id){
-    $('#id' + id).children('.input-group').children('.form-control').focus();        
+
+
+$.elTreeFocusEditDraw = function(id,unfocus) {
+    if (unfocus == "1") {
+        
+        $('#id' + id).children('.input-group').children('.form-control').blur();        
+    } else {
+                
+        $('#id' + id).children('.input-group').children('.form-control').focus()
+    }
 }
+
+
 
 /**перемещение по дереву*/
