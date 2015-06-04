@@ -23,14 +23,6 @@ $(document).ready(function() {
         $.elTreeCheckboxClick($(this).parent().parent(".elTree").attr('id').substr(2));
         $.elTreeFocus(elId);
     });	
-	
-	/**отлавливаем нажатие enter на элементе*/
-    /**     $(".form-control").keypress(function(e) {        
-   if (e.keyCode == 13) {
-            //нажата клавиша enter - здесь ваш код            
-            $(this).blur();         
-        
-    }); }*/
     
     //ставим фокус на элементе, помечаем для редактирования 	
 	$(".form-control").focus(function() {
@@ -57,18 +49,18 @@ $.documentReady = function() {
 				'"treeFocus":"2",'+
 				'"treeFocusEdit":"",'+
 				'"values":{'+
-				' "1":{"name":"уровень1","parent":"0","expand":"-","state":"selected","prev":"" },'+
-	            ' "2":{"name":"уровень2","parent":"1","expand":"-","state":"","prev":"1" },'+
-	            ' "3":{"name":"уровень3","parent":"2","expand":"+" ,"state":"","prev":"2" },'+
-	            ' "4":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"3" },'+
+				' "1":{"name":"уровень1","parent":"","expand":"-","state":"selected","prev":"" },'+
+	            ' "2":{"name":"уровень2","parent":"1","expand":"-","state":"","prev":"" },'+
+	            ' "3":{"name":"уровень3","parent":"2","expand":"+" ,"state":"","prev":"" },'+
+	            ' "4":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"" },'+
 	            ' "5":{"name":"уровень45","parent":"3","expand":"" ,"state":"","prev":"4" },'+
 	            ' "6":{"name":"уровень46","parent":"3","expand":"" ,"state":"","prev":"5" },'+	            
-	            ' "7":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"7" },'+
-	            ' "8":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"6" },'+
-	            ' "9":{"name":"уровень3","parent":"2","expand":"" ,"state":"","prev":"8" },'+
-                ' "10":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"9" },'+                         
+	            ' "7":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"6" },'+
+	            ' "8":{"name":"уровень4","parent":"3","expand":"" ,"state":"","prev":"7" },'+
+	            ' "9":{"name":"уровень3","parent":"3","expand":"" ,"state":"","prev":"8" },'+
+                ' "10":{"name":"уровень4","parent":"2","expand":"" ,"state":"","prev":"3" },'+                         
 	            ' "50":{"name":"уровень3","parent":"2","expand":"" ,"state":"","prev":"10"}}}';
-	var tree = jQuery.parseJSON(templ);	
+	var tree = jQuery.parseJSON(templ);
 	$.treeDraw(tree);
 
 	//фиксируем свертывание/развертывание в модели и даем команду на отображение свертывания/развертывания
@@ -113,28 +105,35 @@ $.documentReady = function() {
         var next;
         if (tree.treeFocusEdit == "") {//если поле не редактируется
             switch(key) {
-
-            case 38:
-                //стрелка вверх
+            case 37:    //стрелка влево
+                if (tree.values[tree.treeFocus].parent)
+                    $.elTreeFocus(tree.values[tree.treeFocus].parent);
+                break;
+            case 38:    //стрелка вверх                
                 if (tree.values[tree.treeFocus].prev)
                     $.elTreeFocus(tree.values[tree.treeFocus].prev);
                 break;
-            case 40:
-                //стрелка вниз
+            case 39:    //стрелка вправо
+                child = $.childId(tree.treeFocus);
+                if (child){
+                    if(tree.values[tree.treeFocus].expand=="+") $.elTreeExpanderClick(tree.treeFocus);
+                    $.elTreeFocus(child)};
+                break;
+            case 40:    //стрелка вниз
                 next = $.nextId(tree.treeFocus);
                 if (next)
                     $.elTreeFocus(next);
                 break;
-            case 13:
-                //клавиша enter
-
+            case 13:    //клавиша enter
                 $.elTreeFocusEditDraw(tree.treeFocus);
+                break;
+            case 17:    //клавиша ctrl
+                $.elTreeCheckboxClick(tree.treeFocus);
                 break;
             }
 
         } else {
             switch(key) {
-
             case 13:
                 //клавиша enter
                 $.elTreeFocusEditDraw(tree.treeFocus,"1");
@@ -143,17 +142,26 @@ $.documentReady = function() {
         }
     }
 
-
-
     //поиск следующего по порядку элемента
-    $.nextId = function(id) {
-        var idNextFound = "";
-        $.each(tree.values, function(idNext, value) {
-            if (tree.values[idNext].prev == id)
-                idNextFound = idNext;
-        });
-        return idNextFound;
-    }
+        $.nextId = function(id) {
+            var idNextFound = "";
+                $.each(tree.values, function(idNext, value) {
+                    if (tree.values[idNext].prev == id)
+                        idNextFound = idNext;
+                });                        
+            return idNextFound;
+        }
+
+    //поиск первого потомка
+        $.childId = function(id) {
+            var idChildFound = "";
+            $.each(tree.values, function(idChild, value) {
+                if (tree.values[idChild].parent == id && tree.values[idChild].prev == "")                    
+                    idChildFound = idChild;
+            });
+            return idChildFound;
+        }
+
 
     //переключаем режим редактирования на противоположный	
     $.elTreeFocusEdit = function(checker) {
@@ -212,7 +220,7 @@ $.treeDraw = function(tree) {
                 }
                 
                 p = tree.values[elementId].parent;
-                if (p != '0' && tree.values[p].expand == '+') {
+                if (p && tree.values[p].expand == '+') {
                     divCollapse = 'collapse';
                 } else {
                     divCollapse = 'collapse in';
@@ -228,12 +236,16 @@ $.treeDraw = function(tree) {
                                     '</span>'+
                                 '</div>'+
                             '</div>';
-				$("#id" + tree.values[elementId].parent).append(divElTree);
+                if(tree.values[elementId].parent){
+				        $("#id" + tree.values[elementId].parent).append(divElTree);
+				        }else{
+				        $("#id0").append(divElTree);
+				        };
 				$.drawTree(elementId);
 			}			
 		})
 	}
-	$.drawTree("0");	
+	$.drawTree("");	
 	alert('готов!'+iter);
 }
 
@@ -256,8 +268,6 @@ $.elTreeFocusDraw = function(id){
 }
 
 /**режим редактирования*/
-
-
 $.elTreeFocusEditDraw = function(id,unfocus) {
     if (unfocus == "1") {
         
@@ -267,7 +277,3 @@ $.elTreeFocusEditDraw = function(id,unfocus) {
         $('#id' + id).children('.input-group').children('.form-control').focus()
     }
 }
-
-
-
-/**перемещение по дереву*/
