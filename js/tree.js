@@ -136,7 +136,9 @@ $.documentReady = function() {
             switch(key) {
             case 13:
                 //клавиша enter
+                tree.values[tree.treeFocus].name = $('#id' + tree.treeFocus).children('.input-group').children('.form-control').val();
                 $.elTreeFocusEditDraw(tree.treeFocus,"1");
+                alert(tree.values[tree.treeFocus].name);
                 break;
             }
         }
@@ -270,10 +272,8 @@ $.elTreeFocusDraw = function(id){
 /**режим редактирования*/
 $.elTreeFocusEditDraw = function(id,unfocus) {
     if (unfocus == "1") {
-        
-        $('#id' + id).children('.input-group').children('.form-control').blur();        
-    } else {
-                
-        $('#id' + id).children('.input-group').children('.form-control').focus()
+        $('#id' + id).children('.input-group').children('.form-control').blur();       
+    } else {                
+        $('#id' + id).children('.input-group').children('.form-control').focus();        
     }
 }
