@@ -3,11 +3,8 @@
  * @author дом
  */
 
-/** показывать подпункты:по событию.click по +/- выбрать все div с классом elTree на текущем уровне DOM и выполнить toggle
- */
-
 /**Контроллер*/
-/**отслеживаем открытие документа*/
+//отслеживаем открытие документа
 $(document).ready(function() {
 	$.documentReady();
 	/**отслеживаем событие по клику на иконке развертывания и передаем модели*/
@@ -17,7 +14,7 @@ $(document).ready(function() {
 		$.elTreeFocus(elId);
 	});
 	
-	/**отслеживаем событие по клику на флажке и передаем модели*/
+	//отслеживаем событие по клику на флажке и передаем модели
     $(".input-group-addon.elCheckbox").click(function() {
     	var elId = $(this).parent().parent(".elTree").attr('id').substr(2);
         $.elTreeCheckboxClick($(this).parent().parent(".elTree").attr('id').substr(2));
@@ -36,9 +33,14 @@ $(document).ready(function() {
         $.elTreeFocusEdit("");            
     });
     //отслеживаем нажатие клавиш
-    $(document).keydown(function(e){
-        $.elTreeKey(e.keyCode);
-    })
+
+        $(document).keydown(function(e) {
+            if (e.keyCode == 13)
+                $.elTreeKey(e.keyCode, $('#id0').find('.elTree').find('.elTreeFocusHighlight').val())
+            else
+                $.elTreeKey(e.keyCode);
+        })
+
 });
 /*************************************************************/
 
@@ -101,7 +103,7 @@ $.documentReady = function() {
 	
     //обрабатываем нажатия клавиатуры
 
-    $.elTreeKey = function(key) {
+    $.elTreeKey = function(key,elTreeValue) {
         var next;
         if (tree.treeFocusEdit == "") {//если поле не редактируется
             switch(key) {
@@ -135,8 +137,8 @@ $.documentReady = function() {
         } else {
             switch(key) {
             case 13:
-                //клавиша enter
-                tree.values[tree.treeFocus].name = $('#id' + tree.treeFocus).children('.input-group').children('.form-control').val();
+                //клавиша enter                
+                tree.values[tree.treeFocus].name = elTreeValue;
                 $.elTreeFocusEditDraw(tree.treeFocus,"1");
                 alert(tree.values[tree.treeFocus].name);
                 break;
@@ -178,7 +180,7 @@ $.documentReady = function() {
 /*************************************************************/
 
 /**Представление*/
-/**Отрисовка дерева из модели*/
+//Отрисовка дерева из модели
 $.treeDraw = function(tree) {	
 	var divElTree;
 	var divExpand;
@@ -187,7 +189,7 @@ $.treeDraw = function(tree) {
 	var inputHighlight;
 	var iter = 0;
 	var p;
-//дальше идет рекурсивно: функция рисует все подэлементы у указанной ветки, затем рисует подэлементы у каждого потомка ветки и т.д.   
+    //дальше идет рекурсивно: функция рисует все подэлементы у указанной ветки, затем рисует подэлементы у каждого потомка ветки и т.д.   
 	$.drawTree = function(parentId) {	
 		
 		$.each(tree.values, function(elementId, value) {
@@ -251,7 +253,7 @@ $.treeDraw = function(tree) {
 	alert('готов!'+iter);
 }
 
-/**отображение свертывания/развертывания*/
+//отображение свертывания/развертывания
 $.elTreeToggleDraw = function(id) {
 	//ищем кнопочку + или -,скрываем вложенные элементы, меняем кнопочку +/-	
 	var selector = $('#id' + id).children('.input-group').find('.elTreeExpander');
@@ -260,16 +262,16 @@ $.elTreeToggleDraw = function(id) {
 		selector.toggleClass("glyphicon-plus").toggleClass("glyphicon-minus");
 	}
 
-/**отображение флажка для выбранного элемента*/
+//отображение флажка для выбранного элемента
 $.elTreeSelectDraw = function(id) {
     $('#id' + id).children('.input-group').children('.input-group-addon.elCheckbox').children('span.glyphicon').toggleClass("glyphicon-check").toggleClass("glyphicon-unchecked");
 }
-/**отображение подсветки фокуса*/
+//отображение подсветки фокуса
 $.elTreeFocusDraw = function(id){
 	$('#id' + id).children('.input-group').children('.form-control').toggleClass('elTreeFocusHighlight');
 }
 
-/**режим редактирования*/
+//режим редактирования
 $.elTreeFocusEditDraw = function(id,unfocus) {
     if (unfocus == "1") {
         $('#id' + id).children('.input-group').children('.form-control').blur();       
