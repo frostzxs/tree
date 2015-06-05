@@ -180,8 +180,7 @@ $.documentReady = function() {
             case 13:
                 //клавиша enter
                 tree.values[tree.treeFocus].name = elTreeValue;
-                $.elTreeFocusEditDraw(tree.treeFocus, "1");
-                alert(tree.values[tree.treeFocus].name);
+                $.elTreeFocusEditDraw(tree.treeFocus, "1");                
                 break;
             }
         }
@@ -221,24 +220,27 @@ $.documentReady = function() {
 
     //создаем новый элемент
 
-        $.elTreeAdd = function(name, prevId, parent) {
+        $.elTreeAdd = function(nameText, prevId, parentId) {
             //найти n - индекс последнего элемента
             var lastKey = 0;
+            var next;
             $.each(tree.values, function(elementId, value) {
                 if (Number(elementId) > lastKey)
                     lastKey = elementId;
             });
-            lastKey = Number(lastKey) + 1;
-            alert(lastKey);
+            lastKey = Number(lastKey) + 1;            
             //создать элемент "n+1":{"name":"текст","parent":"родитель текущего","expand":"","state":"","prev":"текущий" }
+            next = $.nextId(prevId);
+            if (next) tree.values[next].prev = lastKey;
             tree.values[lastKey] = {
-                name : "текст",
-                parent : parent,
+                name : nameText,
+                parent : parentId,
                 expand : "",
                 state : "",
                 prev : prevId
-            };
-            $.elTreeAddDraw(lastKey, prevId, parent);
+            };            
+            
+            $.elTreeAddDraw(lastKey, prevId, parentId);
             return lastKey;
         }; 
 
@@ -367,6 +369,5 @@ $.elTreeAddDraw = function(id,prevId,parent){
             $('#id' + parent).prepend(divElTree)
         else
             $('#id0').prepend(divElTree)
-         };
-    alert();
+         };    
 }
