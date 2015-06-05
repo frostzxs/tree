@@ -36,9 +36,9 @@ $(document).ready(function() {
 
         $(document).keydown(function(e) {
             if (e.keyCode == 13)
-                $.elTreeKey(e.keyCode, $('#id0').find('.elTree').find('.elTreeFocusHighlight').val())
+                $.elTreeKey(e.ctrlKey,e.keyCode, $('#id0').find('.elTree').find('.elTreeFocusHighlight').val())
             else
-                $.elTreeKey(e.keyCode);
+                $.elTreeKey(e.ctrlKey,e.keyCode);
         })
 
 });
@@ -103,48 +103,92 @@ $.documentReady = function() {
 	
     //обрабатываем нажатия клавиатуры
 
-    $.elTreeKey = function(key,elTreeValue) {
+
+    $.elTreeKey = function(ctrl, key, elTreeValue) {
         var next;
         if (tree.treeFocusEdit == "") {//если поле не редактируется
-            switch(key) {
-            case 37:    //стрелка влево
-                if (tree.values[tree.treeFocus].parent)
-                    $.elTreeFocus(tree.values[tree.treeFocus].parent);
-                break;
-            case 38:    //стрелка вверх                
-                if (tree.values[tree.treeFocus].prev)
-                    $.elTreeFocus(tree.values[tree.treeFocus].prev);
-                break;
-            case 39:    //стрелка вправо
-                child = $.childId(tree.treeFocus);
-                if (child){
-                    if(tree.values[tree.treeFocus].expand=="+") $.elTreeExpanderClick(tree.treeFocus);
-                    $.elTreeFocus(child)};
-                break;
-            case 40:    //стрелка вниз
-                next = $.nextId(tree.treeFocus);
-                if (next)
-                    $.elTreeFocus(next);
-                break;
-            case 13:    //клавиша enter
-                $.elTreeFocusEditDraw(tree.treeFocus);
-                break;
-            case 17:    //клавиша ctrl
-                $.elTreeCheckboxClick(tree.treeFocus);
-                break;
+            if (ctrl) {
+                switch(key) {
+                case 37:
+                    //стрелка влево
+                    //создать элемент выше уровнем
+                    if (tree.values[tree.treeFocus].parent)
+                        $.elTreeFocus(tree.values[tree.treeFocus].parent);
+                    break;
+                case 38:
+                    //стрелка вверх
+                    //создать элемент выше
+                    if (tree.values[tree.treeFocus].prev)
+                        $.elTreeFocus(tree.values[tree.treeFocus].prev);
+                    break;
+                case 39:
+                    //стрелка вправо
+                    //создать элемент ниже уровнем
+                    child = $.childId(tree.treeFocus);
+                    if (child) {
+                        if (tree.values[tree.treeFocus].expand == "+")
+                            $.elTreeExpanderClick(tree.treeFocus);
+                        $.elTreeFocus(child)
+                    };
+                    break;
+                case 40:
+                    //стрелка вниз
+                    //создать элемент ниже:
+                    //найти n - индекс последнего элемента
+                    //создать элемент "n+1":{"name":"текст","parent":"родитель текущего","expand":"","state":"","prev":"текущий" }                      
+                    //перевести фокус на этот элемент treeFocus
+                    tree.treeFocus = newElId;
+                    
+            } else {
+                switch(key) {
+                case 37:
+                    //стрелка влево
+                    if (tree.values[tree.treeFocus].parent)
+                        $.elTreeFocus(tree.values[tree.treeFocus].parent);
+                    break;
+                case 38:
+                    //стрелка вверх
+                    if (tree.values[tree.treeFocus].prev)
+                        $.elTreeFocus(tree.values[tree.treeFocus].prev);
+                    break;
+                case 39:
+                    //стрелка вправо
+                    child = $.childId(tree.treeFocus);
+                    if (child) {
+                        if (tree.values[tree.treeFocus].expand == "+")
+                            $.elTreeExpanderClick(tree.treeFocus);
+                        $.elTreeFocus(child)
+                    };
+                    break;
+                case 40:
+                    //стрелка вниз
+                    next = $.nextId(tree.treeFocus);
+                    if (next)
+                        $.elTreeFocus(next);
+                    break;
+                case 13:
+                    //клавиша enter
+                    $.elTreeFocusEditDraw(tree.treeFocus);
+                    break;
+                case 17:
+                    //клавиша ctrl
+                    $.elTreeCheckboxClick(tree.treeFocus);
+                    break;
+                }
             }
-
         } else {
             switch(key) {
             case 13:
-                //клавиша enter                
+                //клавиша enter
                 tree.values[tree.treeFocus].name = elTreeValue;
-                $.elTreeFocusEditDraw(tree.treeFocus,"1");
+                $.elTreeFocusEditDraw(tree.treeFocus, "1");
                 alert(tree.values[tree.treeFocus].name);
                 break;
             }
         }
     }
+
+
 
     //поиск следующего по порядку элемента
         $.nextId = function(id) {
