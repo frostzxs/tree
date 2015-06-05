@@ -128,16 +128,16 @@ $.documentReady = function() {
                     if (child) {
                         if (tree.values[tree.treeFocus].expand == "+")
                             $.elTreeExpanderClick(tree.treeFocus);
-                        $.elTreeFocus(child)
+                        $.elTreeFocus(child);
                     };
                     break;
                 case 40:
                     //стрелка вниз
                     //создать элемент ниже:                    
-                    //$.elTreeAdd(name,parent,prev);                                       
-                    //перевести фокус на этот элемент treeFocus
-                    //tree.treeFocus = newElId;
-                    
+                    //перевести фокус на этот элемент treeFocus                    
+                    $.elTreeFocus($.elTreeAdd("текст",tree.treeFocus,tree.values[tree.treeFocus].parent));
+                    break;
+                }
             } else {
                 switch(key) {
                 case 37:
@@ -220,12 +220,28 @@ $.documentReady = function() {
     }
 
     //создаем новый элемент
-    $.elTreeAdd = function(name,parent,prev){
-        tree.values[n+1] = ;
-        
-        //найти n - индекс последнего элемента
-                    //создать элемент "n+1":{"name":"текст","parent":"родитель текущего","expand":"","state":"","prev":"текущий" }   
-    };
+
+        $.elTreeAdd = function(name, prevId, parent) {
+            //найти n - индекс последнего элемента
+            var lastKey = 0;
+            $.each(tree.values, function(elementId, value) {
+                if (Number(elementId) > lastKey)
+                    lastKey = elementId;
+            });
+            lastKey = Number(lastKey) + 1;
+            alert(lastKey);
+            //создать элемент "n+1":{"name":"текст","parent":"родитель текущего","expand":"","state":"","prev":"текущий" }
+            tree.values[lastKey] = {
+                name : "текст",
+                parent : parent,
+                expand : "",
+                state : "",
+                prev : prevId
+            };
+            $.elTreeAddDraw(lastKey, prevId, parent);
+            return lastKey;
+        }; 
+
 }
 /*************************************************************/
 
@@ -328,4 +344,29 @@ $.elTreeFocusEditDraw = function(id,unfocus) {
     } else {                
         $('#id' + id).children('.input-group').children('.form-control').focus();        
     }
+}
+
+//добавляем элемент
+$.elTreeAddDraw = function(id,prevId,parent){
+    divElTree = '<div class="elTree" id="id' + id + '">'+
+                                '<div class="input-group">'+
+                                    '<span class="input-group-addon action">'+
+                                        '<span class="glyphicon glyphicon-leaf"></span>'+
+                                    '</span>'+
+                                    '<input type="text" class="form-control" value="текст">'+
+                                    '<span class="input-group-addon elCheckbox">'+
+                                        '<span class="glyphicon glyphicon-unchecked"></span>'+
+                                    '</span>'+
+                                '</div>'+
+                            '</div>';
+    
+    if (prevId)
+        $('#id' + prevId).after(divElTree)
+    else {
+        if (parent)
+            $('#id' + parent).prepend(divElTree)
+        else
+            $('#id0').prepend(divElTree)
+         };
+    alert();
 }
