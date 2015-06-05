@@ -133,11 +133,10 @@ $.documentReady = function() {
                     break;
                 case 40:
                     //стрелка вниз
-                    //создать элемент ниже:
-                    //найти n - индекс последнего элемента
-                    //создать элемент "n+1":{"name":"текст","parent":"родитель текущего","expand":"","state":"","prev":"текущий" }                      
+                    //создать элемент ниже:                    
+                    //$.elTreeAdd(name,parent,prev);                                       
                     //перевести фокус на этот элемент treeFocus
-                    tree.treeFocus = newElId;
+                    //tree.treeFocus = newElId;
                     
             } else {
                 switch(key) {
@@ -220,6 +219,13 @@ $.documentReady = function() {
         }
     }
 
+    //создаем новый элемент
+    $.elTreeAdd = function(name,parent,prev){
+        tree.values[n+1] = ;
+        
+        //найти n - индекс последнего элемента
+                    //создать элемент "n+1":{"name":"текст","parent":"родитель текущего","expand":"","state":"","prev":"текущий" }   
+    };
 }
 /*************************************************************/
 
